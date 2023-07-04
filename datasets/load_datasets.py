@@ -161,7 +161,11 @@ class MUTAGDataset(InMemoryDataset):
         extract_zip(path, folder)
         os.unlink(path)
         shutil.rmtree(self.raw_dir)
-        os.rename(osp.join(folder, self.name), self.raw_dir)
+        try:
+            os.rename(osp.join(folder, self.name), self.raw_dir)
+        except FileNotFoundError:
+            capitalName = self.name[:1].upper() + self.name[1:]
+            os.rename(osp.join(folder, capitalName), self.raw_dir)
 
     def process(self):
         r"""Processes the dataset to the :obj:`self.processed_dir` folder."""
